@@ -9,6 +9,13 @@ Operating mode
 - Smallest shippable change. Ask-before-create for new files/deps.
 - Cloud-ready & demo-proof: containerizable, env-driven, one-command run.
 
+## Online docs check (mandatory)
+- Before implementing: look up latest official docs/release notes for any API/library you will use or modify.
+- Below are some reference for the documents that might be useful: 
+1) https://google.github.io/adk-docs/ （Google ADK）
+2) https://ai.pydantic.dev/ (Pydantic)
+
+
 Response format (every answer)
 1) Scope — files(≤2) & purpose
 2) Diff estimate — ~N lines, new files? y/n
