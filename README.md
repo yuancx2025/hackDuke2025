@@ -1,4 +1,5 @@
 # PersonaReflect 🎭
+
 ## AI-Powered Multi-Agent Self-Reflection Coach
 
 ### 🏆 HackDuke 2025 Project
@@ -7,22 +8,24 @@ PersonaReflect uses Google ADK to create a multi-agent system that provides dive
 
 ## 🌟 Features
 
-- **4 Specialized AI Coaches**: Each with unique perspectives and approaches
-  - 🧠 **Dr. Chen** - Cognitive-Behavioral Coach
-  - 💙 **Maya** - Empathetic Friend
-  - 📊 **Alex** - Rational Analyst
-  - 🧘 **Sage** - Mindfulness Mentor
-- **Multi-Agent Orchestration**: Using Google ADK for coordinated responses
-- **Action Plan Generation**: Synthesizes insights into concrete steps
-- **Beautiful React Frontend**: Clean, intuitive interface
-- **Real-time Processing**: Fast, parallel agent processing
+* **4 Specialized AI Coaches**: Each with unique perspectives and approaches
+
+  * 🧠 **Dr. Chen** — Cognitive-Behavioral Coach
+  * 💙 **Maya** — Empathetic Friend
+  * 📊 **Alex** — Rational Analyst
+  * 🧘 **Sage** — Mindfulness Mentor
+* **Multi-Agent Orchestration**: Using Google ADK for coordinated responses
+* **Action Plan Generation**: Synthesizes insights into concrete steps
+* **Beautiful React Frontend**: Clean, intuitive interface
+* **Real-time Processing**: Fast, parallel agent responses
 
 ## 🚀 Quick Start (Hackathon Demo)
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- Google API Key (for Gemini)
+
+* Python 3.11+
+* Node.js 18+
+* Google API Key (for Gemini)
 
 ### Setup & Install
 
@@ -84,20 +87,15 @@ cd frontend
 npm run dev
 ```
 
-Then open http://localhost:5173/ and test the complete flow:
+Then open [http://localhost:5173](http://localhost:5173) and test the complete flow:
+
 1. Check for "Connected to AI backend!" toast notification
 2. Click "Start New Reflection"
 3. Enter a dilemma and submit
-4. Verify all 4 AI personas respond (10-20 seconds)
+4. Verify all 4 AI personas respond (10–20 seconds)
 5. Create and save an action plan
 
-**📘 For detailed integration testing:** See [INTEGRATION_TEST.md](./INTEGRATION_TEST.md)
-
-### Access the Application
-
-- 🌐 **Frontend**: http://localhost:5173
-- 🔧 **API Docs**: http://localhost:8000/docs
-- 📊 **API Health**: http://localhost:8000/
+---
 
 ## 🏗️ Architecture
 
@@ -107,7 +105,7 @@ graph TD
     API --> Orchestrator[ADK Orchestrator]
     Orchestrator --> CBT[Dr. Chen - CBT Agent]
     Orchestrator --> EMP[Maya - Empathetic Agent]
-    Orchestrator --> RAT[Alex - Rational Agent]
+    Orchestrator --> RAT[Alex - Rational Analyst]
     Orchestrator --> MIN[Sage - Mindfulness Agent]
     CBT --> Response[Unified Response]
     EMP --> Response
@@ -119,168 +117,154 @@ graph TD
 
 ## 📚 API Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Health check |
-| `/api/reflect` | POST | Process dilemma through all personas |
-| `/api/action-plan` | POST | Generate action plan from insights |
-| `/api/personas` | GET | Get persona information |
+| Endpoint             | Method | Description                                   |
+| -------------------- | ------ | --------------------------------------------- |
+| `/`                  | GET    | Health check                                  |
+| `/api/reflect`       | POST   | Process dilemma through all personas          |
+| `/api/action-plan`   | POST   | Generate action plan from insights            |
+| `/api/personas`      | GET    | Get persona information                       |
+| `/api/alex/schedule` | POST   | Get available time slots from Google Calendar |
+| `/api/alex/book`     | POST   | Create a new event on Google Calendar         |
 
-### Example Request
+---
+
+## 📊 Google Calendar Integration (Rational Analyst — Alex)
+
+Our agents can now analyze your workload and directly schedule focused work sessions in **Google Calendar**.
+Follow these steps to enable the connection locally.
+
+### ✅ 1️⃣ Create Google Cloud OAuth Credentials
+
+1. Go to the **[Google Cloud Console](https://console.cloud.google.com/)**.
+2. Create a new project or use an existing one.
+3. Navigate to:
+
+   ```
+   APIs & Services → Enabled APIs & Services
+   ```
+4. Click **“+ ENABLE APIS AND SERVICES.”**
+5. Search for **Google Calendar API** → click **Enable**.
+6. Then go to:
+
+   ```
+   APIs & Services → Credentials → Create Credentials → OAuth client ID
+   ```
+7. Choose **“Desktop app”** as the application type.
+8. Download the generated JSON file (it will look like `client_secret_xxx.json`).
+
+   * This file is your **OAuth client credentials**.
+   * **Do not commit or share** this file publicly.
+
+---
+
+### ✅ 2️⃣ Add the Credentials to the Backend
+
+1. Move your downloaded credentials into the backend directory and rename it to:
+
+   ```
+   backend/credentials.json
+   ```
+
+2. Add both credentials and tokens to your `.gitignore`:
+
+   ```
+   backend/credentials.json
+   backend/.gcal_token.json
+   ```
+
+---
+
+### ✅ 3️⃣ Add Test Users to the OAuth Consent Screen
+
+Since the app is still in testing mode, only test users can authorize it.
+
+1. Go to:
+
+   ```
+   APIs & Services → OAuth consent screen → Audience
+   ```
+2. Under **Test users**, click **“+ ADD USERS.”**
+3. Add your Gmail address (e.g. `youremail@gmail.com`).
+4. Save changes.
+
+> Only users listed here can log in during OAuth testing.
+
+---
+
+### ✅ 4️⃣ Authorize the App (First-Time Login)
+
+When you run the backend (or call a calendar endpoint for the first time):
+
+1. A browser window will open automatically.
+2. Log in with your Google account.
+3. Approve access to your **Google Calendar**.
+4. A token file will be created automatically:
+
+   ```
+   backend/.gcal_token.json
+   ```
+
+   * This stores your personal access & refresh tokens.
+   * It allows future access without re-login.
+
+> ⚠️ This token file is user-specific. Keep it local and private.
+
+---
+
+### ✅ 5️⃣ Verify Connection
+
+Once authorization is complete, your terminal will show:
 
 ```bash
-curl -X POST http://localhost:8000/api/reflect \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": "demo_user",
-    "dilemma": "I keep procrastinating on my important project"
-  }'
+🚀 Initializing PersonaReflect multi-agent system...
+✅ Google Calendar token found at backend/.gcal_token.json
 ```
 
-## 🛠️ Tech Stack
+This confirms your backend is connected to Google Calendar.
+
+## 🧠 Tech Stack
 
 ### Backend
-- **Google ADK**: Multi-agent orchestration
-- **FastAPI**: REST API framework
-- **Google Gemini**: LLM for agents
-- **Pydantic**: Data validation
+
+* **Google ADK** — Multi-agent orchestration
+* **FastAPI** — REST API framework
+* **Google Gemini** — LLM for agents
+* **Google Calendar API** — Event scheduling and time-slot suggestions
+* **Pydantic** — Data validation
 
 ### Frontend
-- **React 18**: UI framework
-- **TypeScript**: Type safety
-- **Tailwind CSS**: Styling
-- **Vite**: Build tool
-- **Motion**: Animations
 
-## 📦 Project Structure
+* **React 18 + TypeScript** — Modern UI stack
+* **Tailwind CSS** — Responsive styling
+* **Vite** — Fast build system
+* **Framer Motion** — Smooth animations
 
-```
-hackDuke2025/
-├── backend/                    # ADK multi-agent system
-│   ├── persona_reflect/       
-│   │   ├── agents/            # Four persona agents
-│   │   ├── prompts/           # Few-shot prompts
-│   │   └── main.py            # FastAPI server
-│   └── requirements.txt
-├── frontend/                   # React application
-│   └── AI Self-Reflection Coach/
-├── docker-compose.yml         # Full-stack deployment
-└── Makefile                   # Quick commands
-```
-
-## 🧪 Testing the System
-
-1. **Smoke test + dependency checks**
-
-    ```bash
-    cd backend
-    python quick_test.py
-    ```
-
-    > The script verifies `.env`, required packages, module imports, and optionally runs a live ADK agent call.
-
-2. **Interactive multi-agent demo**
-
-    ```bash
-    python interactive_demo.py
-    ```
-
-    > Choose a sample dilemma or type your own to see all four personas respond in parallel.
-
-3. **API health check (after `make backend` or `make docker-up`)**
-
-    ```bash
-    curl -X POST http://localhost:8000/api/reflect \
-      -H "Content-Type: application/json" \
-      -d '{
-        "user_id": "demo_user",
-        "dilemma": "I struggle with work-life balance"
-      }'
-    ```
-
-## 🎮 Demo Flow
-
-1. **Start**: User enters a personal dilemma
-2. **Process**: ADK orchestrator distributes to 4 agents in parallel
-3. **Insights**: Each persona provides unique perspective
-4. **Synthesis**: System generates actionable steps
-5. **Track**: User can save and track progress
-
-## 🔧 Development
-
-### Install Dependencies
-```bash
-make install
-```
-
-### Run Tests
-```bash
-make test-backend
-```
-
-### Clean Build
-```bash
-make clean
-```
-
-## 📈 Performance
-
-- **Response Time**: <3 seconds for all 4 personas
-- **Parallel Processing**: All agents run concurrently
-- **Scalable**: Ready for cloud deployment
-
-## 🚢 Deployment
-
-### Docker Deployment
-```bash
-make docker-build
-make docker-up
-```
-
-### Google Cloud Run
-```bash
-gcloud run deploy persona-reflect \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated
-```
-
-## 👥 Team
-
-- **Frontend**: React + TypeScript expert
-- **Backend**: Google ADK integration
-- **AI/ML**: Prompt engineering & agent design
-- **DevOps**: Docker & cloud deployment
-
-## 📝 Key Features for Judges
-
-1. **Real Google ADK Implementation**: Not just API calls, but true multi-agent orchestration
-2. **Production-Ready**: Docker, tests, proper error handling
-3. **Unique Personas**: Each agent has distinct personality via few-shot prompting
-4. **Actionable Output**: Synthesizes insights into concrete steps
-5. **Clean Architecture**: Modular, scalable, maintainable
+---
 
 ## 🔮 Future Enhancements
 
-- [ ] Memory system for conversation history
-- [ ] Calendar integration for time management
-- [ ] Voice input/output
-- [ ] Mobile app
-- [ ] More specialized agents (Financial Advisor, Career Coach)
-- [ ] A2A protocol for external agent integration
+* [ ] Memory system for conversation history
+* [ ] Voice input/output
+* [ ] Mobile app
+* [ ] More specialized agents (Financial Advisor, Career Coach)
+* [ ] A2A protocol for external agent collaboration
+
+---
+
+## 🧑‍💻 Team
+
+* **Frontend**: React + TypeScript
+* **Backend**: Google ADK, FastAPI, and Calendar integration
+* **AI/ML**: Prompt design and agent orchestration
+* **DevOps**: Docker and deployment setup
+
+---
 
 ## 📄 License
 
-MIT License - HackDuke 2025
-
-## 🙏 Acknowledgments
-
-- Google ADK team for the amazing framework
-- HackDuke organizers
-- Coffee ☕
+MIT License — HackDuke 2025
 
 ---
 
 **Built with ❤️ at HackDuke 2025**
-
 *"Your personal board of advisors, powered by AI"*
