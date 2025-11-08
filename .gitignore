@@ -49,4 +49,4 @@ dist/
 logs/
 
 credentials.json
-.gcal_token.json
+.gcal_token.json.gcal_token.json
