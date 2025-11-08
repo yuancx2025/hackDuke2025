@@ -96,6 +96,7 @@ uvicorn persona_reflect.main:app --reload --host 0.0.0.0 --port 8000
 
 # Terminal 2: Frontend  
 cd frontend
+npm install
 npm run dev
 ```
 
