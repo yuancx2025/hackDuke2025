@@ -261,21 +261,12 @@ gcloud run deploy persona-reflect \
 ## 🔮 Future Enhancements
 
 - [ ] Memory system for conversation history
-- [ ] Calendar integration for time management
-- [ ] Voice input/output
-- [ ] Mobile app
 - [ ] More specialized agents (Financial Advisor, Career Coach)
 - [ ] A2A protocol for external agent integration
 
 ## 📄 License
 
 MIT License - HackDuke 2025
-
-## 🙏 Acknowledgments
-
-- Google ADK team for the amazing framework
-- HackDuke organizers
-- Coffee ☕
 
 ---
 
