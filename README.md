@@ -1,7 +1,7 @@
 # PersonaReflect 🎭
 ## AI-Powered Multi-Agent Self-Reflection Coach
 
-### 🏆 HackDuke 2025 Project
+### HackDuke 2025 Project
 
 PersonaReflect uses Google ADK to create a multi-agent system that provides diverse perspectives on personal dilemmas through four distinct AI personas.
 
