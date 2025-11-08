@@ -4,19 +4,20 @@ Cognitive-Behavioral Coach Agent - Dr. Chen
 import os
 from google.adk.agents import Agent
 from ..prompts.personas import COGNITIVE_BEHAVIORAL_PROMPTS
+from persona_reflect.tools import CALENDAR_TOOL_FUNCS
 
 class CognitiveBehavioralAgent:
     """
     Dr. Chen - Cognitive-Behavioral Coach
     Focuses on identifying thought patterns and developing practical strategies
     """
-    
+
     def __init__(self):
         self.persona_id = "cognitive-behavioral"
         self.name = "Dr. Chen"
         self.icon = "🧠"
         self.model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
-        
+
         # Initialize ADK agent with few-shot prompts
         self.agent = Agent(
             name="dr_chen_cognitive_behavioral",
@@ -50,9 +51,10 @@ class CognitiveBehavioralAgent:
             Remember: You are NOT providing therapy or diagnosis. You're offering coaching insights based on CBT principles.
             Keep responses concise (3-4 paragraphs) and actionable.
             """,
-            description="Cognitive-Behavioral Coach focusing on thought patterns and practical strategies"
+            description="Cognitive-Behavioral Coach focusing on thought patterns and practical strategies",
+            tools=CALENDAR_TOOL_FUNCS,
         )
-    
+
     async def process(self, dilemma: str, context: dict = {}) -> str:
         """Process dilemma through CBT lens"""
         response = await self.agent.run(dilemma)

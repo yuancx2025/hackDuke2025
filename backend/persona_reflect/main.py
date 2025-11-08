@@ -6,7 +6,7 @@ import asyncio
 from typing import List, Dict, Any
 from datetime import datetime
 from contextlib import asynccontextmanager
-from services.gcal_demo import (
+from persona_reflect.services.gcal_demo import (
     gcal,
     suggest_slots as g_suggest,
     create_block as g_create,
@@ -20,7 +20,7 @@ from persona_reflect.agents.controllers.scheduler import (
     alex_suggest_with_slots,
     book_slot,
 )
-from services.gcal_demo import gcal, TOKEN_PATH
+from persona_reflect.services.gcal_demo import gcal, TOKEN_PATH
 
 
 # Load environment variables

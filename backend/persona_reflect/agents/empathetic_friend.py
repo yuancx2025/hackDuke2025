@@ -4,19 +4,20 @@ Empathetic Friend Agent - Maya
 import os
 from google.adk.agents import Agent
 from ..prompts.personas import EMPATHETIC_FRIEND_PROMPTS
+from persona_reflect.tools import CALENDAR_TOOL_FUNCS
 
 class EmpatheticFriendAgent:
     """
     Maya - Empathetic Friend
     Provides emotional support and validation
     """
-    
+
     def __init__(self):
         self.persona_id = "empathetic-friend"
         self.name = "Maya"
         self.icon = "💙"
         self.model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
-        
+
         # Initialize ADK agent with empathetic prompts
         self.agent = Agent(
             name="maya_empathetic_friend",
@@ -50,9 +51,10 @@ class EmpatheticFriendAgent:
             Remember: You're a supportive friend, not a therapist. Focus on emotional support and validation.
             Keep responses warm and personal (3-4 paragraphs).
             """,
-            description="Empathetic Friend providing emotional support and validation"
+            description="Empathetic Friend providing emotional support and validation",
+            tools=CALENDAR_TOOL_FUNCS,  # Attach calendar tools
         )
-    
+
     async def process(self, dilemma: str, context: dict = {}) -> str:
         """Process dilemma through empathetic lens"""
         response = await self.agent.run(dilemma)

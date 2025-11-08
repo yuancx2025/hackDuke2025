@@ -1,6 +1,6 @@
 # persona_reflect/agents/controllers/scheduler.py
 from typing import Dict, Any, List
-from services.gcal_demo import suggest_slots as g_suggest, create_block as g_create
+from persona_reflect.services.gcal_demo import suggest_slots as g_suggest, create_block as g_create
 
 
 async def alex_suggest_with_slots(

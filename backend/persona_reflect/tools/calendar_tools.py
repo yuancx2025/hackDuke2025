@@ -1,97 +1,139 @@
-from datetime import datetime, timedelta
-from typing import List, Dict, Any
-from pydantic import BaseModel
-from services.gcal_demo import suggest_slots as g_suggest, create_block as g_create
+# tools/calendar_tools.py
+# All comments in English.
+
+from typing import List, Dict, Any, Optional
+from datetime import datetime, timedelta, timezone
+
+from persona_reflect.services.gcal_demo import (
+    gcal,
+    suggest_slots,
+    create_block as _gcreate,
+)
 
 
-class CalendarEvent(BaseModel):
-    """Data model representing a single calendar event"""
-
-    title: str
-    description: str
-    start_time: datetime
-    duration_minutes: int = 30
-    priority: str = "medium"  # could be "low", "medium", or "high"
+def _now_utc() -> datetime:
+    """Return timezone-aware UTC now."""
+    return datetime.now(timezone.utc)
 
 
-class CalendarTool:
+def _iso_utc(dt: datetime) -> str:
+    """Return ISO8601 string in UTC with offset, no trailing Z."""
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc).isoformat()
+
+
+def _normalize_incoming_iso(s: str) -> str:
+    """Make incoming ISO acceptable to Python fromisoformat by converting Z to +00:00."""
+    return s.replace("Z", "+00:00")
+
+
+def list_events(days: int = 7) -> List[Dict[str, Any]]:
     """
-    Calendar tool that wraps both local and Google Calendar functionality.
-    The external interface (methods) stays the same, but internally this class
-    now delegates scheduling to the real Google Calendar API for demo purposes.
+    List upcoming events within the next `days` days from the primary calendar.
+    Always uses timezone-aware UTC boundaries.
     """
+    now = _now_utc()
+    time_min = _iso_utc(now)
+    time_max = _iso_utc(now + timedelta(days=int(days)))
 
-    def __init__(self):
-        # Keep local storage for mock or fallback
-        self.events: List[CalendarEvent] = []
+    svc = gcal()
+    items: List[Dict[str, Any]] = []
+    page_token: Optional[str] = None
 
-    def suggest_time_slots(
-        self,
-        duration_minutes: int = 30,
-        days_ahead: int = 7,
-        preferred_hours: tuple = (9, 18),
-    ) -> List[Dict[str, Any]]:
-        """
-        Suggest available time slots using Google Calendar free/busy data.
-        If Google Calendar is connected, this returns real free time slots.
-        """
-        # Use the real Google FreeBusy API through g_suggest
-        slots = g_suggest(
-            days=days_ahead,
-            duration=duration_minutes,
-            work_hours=preferred_hours,
-            topk=5,
+    while True:
+        resp = (
+            svc.events()
+            .list(
+                calendarId="primary",
+                timeMin=time_min,
+                timeMax=time_max,
+                singleEvents=True,
+                orderBy="startTime",
+                pageToken=page_token,
+            )
+            .execute()
         )
-        # Convert the Google slot format to match the original mock tool output
-        return [
-            {
-                "date": s["start"][:10],
-                "time": s["start"][11:16],
-                "datetime": s["start"],
-                "label": s["label"],
-            }
-            for s in slots
-        ]
 
-    def create_event(self, event: CalendarEvent) -> Dict[str, Any]:
-        """
-        Create a real Google Calendar event based on the provided data.
-        Still stores a local copy for displaying or offline fallback.
-        """
-        # Send event creation request to Google Calendar
-        created = g_create(
-            title=event.title,
-            start_iso=event.start_time.isoformat(),
-            duration=event.duration_minutes,
-            description=event.description,
+        for ev in resp.get("items", []):
+            start = ev.get("start", {})
+            end = ev.get("end", {})
+            items.append(
+                {
+                    "id": ev.get("id", ""),
+                    "summary": ev.get("summary", ""),
+                    "start": start.get("dateTime") or start.get("date") or "",
+                    "end": end.get("dateTime") or end.get("date") or "",
+                    "htmlLink": ev.get("htmlLink", ""),
+                    "status": ev.get("status", ""),
+                }
+            )
+
+        page_token = resp.get("nextPageToken")
+        if not page_token:
+            break
+
+    return items
+
+
+def find_free_time(
+    days: int = 3,
+    duration_minutes: int = 60,
+    work_hours: Optional[List[int]] = None,
+    topk: int = 3,
+) -> List[Dict[str, Any]]:
+    """
+    Find available time slots using the helper.
+    Args use only JSON-friendly types to support automatic function calling.
+    """
+    if work_hours is None:
+        work_hours = [9, 18]
+    start_h = max(0, int(work_hours[0]))
+    end_h = min(24, int(work_hours[1]))
+    if end_h <= start_h:
+        end_h = min(start_h + 1, 24)
+
+    slots = suggest_slots(
+        days=int(days),
+        duration=int(duration_minutes),
+        work_hours=(start_h, end_h),  # helper expects a tuple; still fine internally
+        topk=int(topk),
+    )
+
+    # Ensure plain JSON with strings only
+    out: List[Dict[str, Any]] = []
+    for s in slots:
+        out.append(
+            {
+                "start": s.get("start", ""),
+                "end": s.get("end", ""),
+                "label": s.get("label", ""),
+            }
         )
-        # Also store a local record for get_upcoming_events()
-        self.events.append(event)
+    return out
 
-        return {
-            "success": True,
-            "event_id": created.get("id"),
-            "message": f"Scheduled: {event.title} at {event.start_time.strftime('%Y-%m-%d %H:%M')}",
-            "htmlLink": created.get("htmlLink"),
-        }
 
-    def get_upcoming_events(self, days: int = 7) -> List[Dict[str, Any]]:
-        """
-        Retrieve upcoming events from local memory.
-        For a full implementation, this could query Google Calendar’s 'list' API instead.
-        """
-        now = datetime.now()
-        cutoff = now + timedelta(days=days)
+def create_block(
+    title: str,
+    start_iso: str,
+    duration_minutes: int = 60,
+    description: str = "",
+) -> Dict[str, Any]:
+    """
+    Create an event block in the primary calendar.
+    Accepts Z or offset; normalizes before passing down.
+    """
+    start_iso_norm = _normalize_incoming_iso(start_iso)
+    created = _gcreate(
+        title=title,
+        start_iso=start_iso_norm,
+        duration=int(duration_minutes),
+        description=description,
+    )
+    return {
+        "id": created.get("id", ""),
+        "htmlLink": created.get("htmlLink", ""),
+    }
 
-        upcoming = [
-            {
-                "title": e.title,
-                "start_time": e.start_time.isoformat(),
-                "duration": e.duration_minutes,
-                "priority": e.priority,
-            }
-            for e in self.events
-            if now <= e.start_time <= cutoff
-        ]
-        # Sort by chronological order
-        return sorted(upcoming, key=lambda x: x["start_time"])
+
+CALENDAR_TOOL_FUNCS = [list_events, find_free_time, create_block]
