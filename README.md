@@ -9,9 +9,9 @@ PersonaReflect uses Google ADK to create a multi-agent system that provides dive
 
 ```mermaid
 graph TD
-    User[User Interface] -->|Text| STT[Speech-to-Text]
+    User[User Interface] -->|Text| API[FastAPI Backend]
     User -->|Audio| AIn[Audio Input - Mic]
-    AIn --> STT
+    AIn --> STT[Speech-to-Text]
     AIn --> EMO[Emotion Recognition]
     STT --> API[FastAPI Backend]
     EMO --> Orchestrator[ADK Orchestrator]
