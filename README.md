@@ -62,14 +62,6 @@ cp backend/.env.example backend/.env
 # edit backend/.env and set GOOGLE_API_KEY=<your-key>
 ```
 
-### Backend Smoke Test
-
-```bash
-cd backend
-python quick_test.py
-# ➡︎ optionally run the live agent test when prompted (requires valid Google AI key)
-```
-
 ### Interactive Agent Demo
 
 ```bash
