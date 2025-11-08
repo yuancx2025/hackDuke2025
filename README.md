@@ -5,6 +5,29 @@
 
 PersonaReflect uses Google ADK to create a multi-agent system that provides diverse perspectives on personal dilemmas through four distinct AI personas.
 
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    User[User Interface] -->|Text| STT[Speech-to-Text]
+    User -->|Audio| AIn[Audio Input - Mic]
+    AIn --> STT
+    AIn --> EMO[Emotion Recognition]
+    STT --> API[FastAPI Backend]
+    EMO --> Orchestrator[ADK Orchestrator]
+    API --> Orchestrator
+    Orchestrator --> CBT[Dr. Chen - CBT Agent]
+    Orchestrator --> EMP[Maya - Empathetic Agent]
+    Orchestrator --> RAT[Alex - Rational Agent]
+    Orchestrator --> MIN[Sage - Mindfulness Agent]
+    CBT --> Response[Unified Response]
+    EMP --> Response
+    RAT --> Response
+    MIN --> Response
+    Response --> ActionPlan[Action Plan Generator]
+    ActionPlan --> User
+```
+
 ## 🌟 Features
 
 - **4 Specialized AI Coaches**: Each with unique perspectives and approaches
@@ -98,24 +121,6 @@ Then open http://localhost:5173/ and test the complete flow:
 - 🌐 **Frontend**: http://localhost:5173
 - 🔧 **API Docs**: http://localhost:8000/docs
 - 📊 **API Health**: http://localhost:8000/
-
-## 🏗️ Architecture
-
-```mermaid
-graph TD
-    User[User Interface] --> API[FastAPI Backend]
-    API --> Orchestrator[ADK Orchestrator]
-    Orchestrator --> CBT[Dr. Chen - CBT Agent]
-    Orchestrator --> EMP[Maya - Empathetic Agent]
-    Orchestrator --> RAT[Alex - Rational Agent]
-    Orchestrator --> MIN[Sage - Mindfulness Agent]
-    CBT --> Response[Unified Response]
-    EMP --> Response
-    RAT --> Response
-    MIN --> Response
-    Response --> ActionPlan[Action Plan Generator]
-    ActionPlan --> User
-```
 
 ## 📚 API Endpoints
 
