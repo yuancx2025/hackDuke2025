@@ -49,6 +49,14 @@
         '@': path.resolve(__dirname, './src'),
       },
     },
+    optimizeDeps: {
+      exclude: [], // Empty for now, can add problematic deps later
+      include: [
+        'react',
+        'react-dom',
+        '@radix-ui/react-checkbox',
+      ],
+    },
     build: {
       target: 'esnext',
       outDir: 'build',
