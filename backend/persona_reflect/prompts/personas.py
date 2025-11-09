@@ -5,6 +5,7 @@ Few-shot prompts for each persona to ensure consistent, high-quality responses
 limitation = """
 Do not exceed 200 words in your responses.
 Break the line when necessary for readability.
+You can use bullet points, numbered lists for clarity or markdown formatting.
 """
 
 # limitation = ""
