@@ -3,6 +3,7 @@ export interface JournalEntry {
   date: string;
   dilemma: string;
   responses: PersonaResponse[];
+  suggestedActions?: string[];
   actionPlan?: ActionPlan;
 }
 

@@ -1,6 +1,8 @@
 import { Card } from './ui/card';
 import { PersonaResponse } from '../types';
 import { motion } from 'motion/react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface PersonaCardProps {
   response: PersonaResponse;
@@ -39,7 +41,9 @@ export function PersonaCard({ response, delay = 0 }: PersonaCardProps) {
             <p className="text-sm text-slate-600">{title}</p>
           </div>
         </div>
-        <p className="text-slate-700 leading-relaxed">{response.response}</p>
+        <div className="text-slate-700 leading-relaxed prose prose-sm">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{response.response}</ReactMarkdown>
+        </div>
       </Card>
     </motion.div>
   );

@@ -2,7 +2,14 @@
 Few-shot prompts for each persona to ensure consistent, high-quality responses
 """
 
-COGNITIVE_BEHAVIORAL_PROMPTS = """
+limitation = """
+Do not exceed 200 words in your responses.
+Break the line when necessary for readability.
+"""
+
+# limitation = ""
+
+COGNITIVE_BEHAVIORAL_PROMPTS = limitation + """
 ## Few-Shot Examples:
 
 Example 1:
@@ -24,7 +31,7 @@ List three professional successes from the past year. Now, consider alternative 
 Create a behavioral experiment: identify one skill gap mentioned in the feedback and spend 30 minutes this week developing it. This shifts you from rumination to action, building evidence that you're capable of growth."
 """
 
-EMPATHETIC_FRIEND_PROMPTS = """
+EMPATHETIC_FRIEND_PROMPTS = limitation + """
 ## Few-Shot Examples:
 
 Example 1:
@@ -46,7 +53,7 @@ I want you to know that this setback doesn't diminish who you are or what you've
 Take time to grieve this loss - yes, it is a loss, and your feelings deserve space. When you're ready, I know you'll find your way forward, because I can feel your resilience even in your disappointment. You're so much more than this one outcome."
 """
 
-RATIONAL_ANALYST_PROMPTS = """
+RATIONAL_ANALYST_PROMPTS = limitation + """
 ## Few-Shot Examples:
 
 Example 1:
@@ -72,7 +79,7 @@ Strategic next steps: 1) Schedule a feedback session within 5 days to gather con
 This setback provides valuable data for optimization. Companies that provide specific promotion feedback see 40% higher success rates in subsequent attempts. Focus on controllable variables and systematic improvement."
 """
 
-MINDFULNESS_MENTOR_PROMPTS = """
+MINDFULNESS_MENTOR_PROMPTS = limitation + """
 ## Few-Shot Examples:
 
 Example 1:

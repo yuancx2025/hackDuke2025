@@ -8,6 +8,9 @@ import { Dashboard } from './components/Dashboard';
 import { EntryDetail } from './components/EntryDetail';
 import { Button } from './components/ui/button';
 import { JournalEntry, PersonaResponse } from './types';
+import { Card } from './components/ui/card';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { ArrowLeft } from 'lucide-react';
 import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner';
@@ -22,6 +25,7 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentResponses, setCurrentResponses] = useState<PersonaResponse[]>([]);
   const [currentDilemma, setCurrentDilemma] = useState('');
+  const [currentSuggestedActions, setCurrentSuggestedActions] = useState<string[]>([]);
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
 
@@ -46,6 +50,7 @@ export default function App() {
     setCurrentEntry(null);
     setCurrentResponses([]);
     setCurrentDilemma('');
+    setCurrentSuggestedActions([]);
   };
 
   const handleSubmitDilemma = async (dilemma: string) => {
@@ -56,6 +61,7 @@ export default function App() {
       // Use real API - it will automatically fall back to mock if backend unavailable
       const result = await api.getReflections(dilemma);
       setCurrentResponses(result.responses);
+      setCurrentSuggestedActions(result.suggested_actions || []);
       setIsGenerating(false);
       
       toast.success('Insights generated! Review the perspectives from your AI coaches.');
@@ -92,33 +98,13 @@ export default function App() {
     toast.success('Action plan saved successfully!');
   };
 
-  const handleCreateActionPlanForNew = (steps: string[]) => {
-    const newEntry: JournalEntry = {
-      id: `entry-${Date.now()}`,
-      date: new Date().toISOString(),
-      dilemma: currentDilemma,
-      responses: currentResponses,
-      actionPlan: {
-        id: `ap-${Date.now()}`,
-        entryId: `entry-${Date.now()}`,
-        steps,
-        createdAt: new Date().toISOString()
-      }
-    };
-
-    setJournalEntries([newEntry, ...journalEntries]);
-    toast.success('Journal entry and action plan saved!');
-    setCurrentView('dashboard');
-    setCurrentResponses([]);
-    setCurrentDilemma('');
-  };
-
   const handleSaveWithoutActionPlan = () => {
     const newEntry: JournalEntry = {
       id: `entry-${Date.now()}`,
       date: new Date().toISOString(),
       dilemma: currentDilemma,
-      responses: currentResponses
+      responses: currentResponses,
+      suggestedActions: currentSuggestedActions
     };
 
     setJournalEntries([newEntry, ...journalEntries]);
@@ -126,6 +112,7 @@ export default function App() {
     setCurrentView('dashboard');
     setCurrentResponses([]);
     setCurrentDilemma('');
+    setCurrentSuggestedActions([]);
   };
 
   const handleSelectEntry = (id: string) => {
@@ -177,6 +164,7 @@ export default function App() {
                   onClick={() => {
                     setCurrentResponses([]);
                     setCurrentDilemma('');
+                    setCurrentSuggestedActions([]);
                   }}
                   variant="ghost"
                   className="text-slate-600 hover:text-slate-800"
@@ -193,34 +181,40 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div>
-                    <h2 className="text-slate-800 mb-4">Insights from Your AI Coaches</h2>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      {currentResponses.map((response: PersonaResponse, index: number) => (
-                        <PersonaCard
-                          key={response.persona}
-                          response={response}
-                          delay={index * 0.1}
-                        />
-                      ))}
-                    </div>
-                  </div>
+                          <div>
+                            <h2 className="text-slate-800 mb-4">Insights from Your AI Coaches</h2>
+                            <div className="grid gap-4 md:grid-cols-2">
+                              {currentResponses.map((response: PersonaResponse, index: number) => (
+                                <PersonaCard
+                                  key={response.persona}
+                                  response={response}
+                                  delay={index * 0.1}
+                                />
+                              ))}
+                            </div>
+                          </div>
 
-                  <div>
-                    <h2 className="text-slate-800 mb-4">Create Your Action Plan</h2>
-                    <ActionPlanCreator
-                      entryId="new"
-                      onSave={handleCreateActionPlanForNew}
-                    />
-                  </div>
+                          {currentSuggestedActions && currentSuggestedActions.length > 0 && (
+                            <div className="mt-6">
+                              <h2 className="text-slate-800 mb-4">Suggested Actions</h2>
+                              <div className="grid gap-4 md:grid-cols-1">
+                                <Card className="p-6 bg-gradient-to-br from-white to-slate-50 border-slate-200">
+                                  <div className="text-slate-700 leading-relaxed prose prose-sm">
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                      {currentSuggestedActions.map((s) => `- ${s}`).join('\n')}
+                                    </ReactMarkdown>
+                                  </div>
+                                </Card>
+                              </div>
+                            </div>
+                          )}
 
-                  <div className="flex justify-center">
+                  <div className="flex justify-center mt-6">
                     <Button
                       onClick={handleSaveWithoutActionPlan}
-                      variant="outline"
-                      className="border-slate-300 text-slate-700"
+                      className="bg-primary text-white hover:bg-primary/90"
                     >
-                      Save Entry Without Action Plan
+                      Save Journal Entry
                     </Button>
                   </div>
                 </div>

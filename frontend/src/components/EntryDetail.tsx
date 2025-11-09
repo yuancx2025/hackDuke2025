@@ -5,6 +5,8 @@ import { PersonaCard } from './PersonaCard';
 import { ActionPlanCreator } from './ActionPlanCreator';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface EntryDetailProps {
   entry: JournalEntry;
@@ -61,6 +63,19 @@ export function EntryDetail({ entry, onBack, onSaveActionPlan }: EntryDetailProp
           ))}
         </div>
       </div>
+
+      {entry.suggestedActions && entry.suggestedActions.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-slate-800 mb-4">Suggested Actions</h2>
+          <Card className="p-6 bg-gradient-to-br from-white to-slate-50 border-slate-200">
+            <div className="text-slate-700 leading-relaxed prose prose-sm">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {entry.suggestedActions.map((s) => `- ${s}`).join('\n')}
+              </ReactMarkdown>
+            </div>
+          </Card>
+        </div>
+      )}
 
       <div>
         <h2 className="text-slate-800 mb-4">
