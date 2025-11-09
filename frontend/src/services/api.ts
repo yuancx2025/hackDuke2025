@@ -116,11 +116,56 @@ class PersonaReflectAPI {
     }
   }
 
+  async getVoices(blob: Blob): Promise<string | void> {
+    const formData = new FormData();
+    formData.append('file', blob, 'record.wav');
+
+    try {
+      const res = await fetch('http://127.0.0.1:9000/transcribe', {
+        method: 'POST',
+        headers: {
+          // 不要手动设置 Content-Type, fetch 会自动为 FormData 设置 multipart/form-data 边界
+          accept: 'application/json',
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      console.log('服务器返回:', data);
+      console.log(data.text);
+      return data.text
+    } catch (err) {
+      console.error('上传失败:', err);
+    }
+  }
+
+  async getEmotion(blob: Blob): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', blob, 'record.wav');
+
+    try {
+      const res = await fetch('http://127.0.0.1:9000/emotion', {
+        method: 'POST',
+        headers: {
+          // 不要手动设置 Content-Type, fetch 会自动为 FormData 设置 multipart/form-data 边界
+          accept: 'application/json',
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      console.log('服务器返回:', data);
+      return data;
+    } catch (err) {
+      console.error('上传失败:', err);
+    }
+  }
+
   private getMockReflections(dilemma: string): DilemmaResponse {
     // Import the mock generator function
     const { generatePersonaResponses } = require('../lib/mockData');
     const responses = generatePersonaResponses(dilemma);
-    
+
     return {
       id: `entry-${Date.now()}`,
       timestamp: new Date().toISOString(),
@@ -231,7 +276,7 @@ class PersonaReflectAPI {
 
     try {
       const response = await fetch(`${this.baseUrl}/api/personas`);
-      
+
       if (!response.ok) {
         throw new Error('Failed to get personas');
       }

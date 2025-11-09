@@ -5,6 +5,9 @@
 
   export default defineConfig({
     plugins: [react()],
+    define: {
+      global: 'window',
+    },
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: {
