@@ -1,10 +1,24 @@
 from fastapi import FastAPI, UploadFile, File
 from speechbrain.inference.interfaces import foreign_class
+from fastapi.middleware.cors import CORSMiddleware
 import whisper
 import tempfile
 import shutil
 
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 app = FastAPI(title="Speech Processing API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ------------------------------
 # ✅ 模型初始化（加载一次）
@@ -53,6 +67,6 @@ async def analyze_emotion(file: UploadFile = File(...)):
     return {
         "emotion": text_lab,
         # "score": float(score),
-        # "index": int(index),
+        "index": int(index),
         "probabilities": out_prob.tolist(),
     }
