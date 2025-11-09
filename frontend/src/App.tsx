@@ -58,6 +58,7 @@ export default function App() {
     setCurrentDilemma(dilemma);
     
     try {
+      
       // Use real API - it will automatically fall back to mock if backend unavailable
       const result = await api.getReflections(dilemma);
       setCurrentResponses(result.responses);

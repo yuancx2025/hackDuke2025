@@ -1,7 +1,7 @@
 # PersonaReflect 🎭
 ## AI-Powered Multi-Agent Self-Reflection Coach
 
-### 🏆 HackDuke 2025 Project
+### HackDuke 2025 Project
 
 PersonaReflect uses Google ADK to create a multi-agent system that provides diverse perspectives on personal dilemmas through four distinct AI personas.
 
@@ -9,9 +9,9 @@ PersonaReflect uses Google ADK to create a multi-agent system that provides dive
 
 ```mermaid
 graph TD
-    User[User Interface] -->|Text| STT[Speech-to-Text]
+    User[User Interface] -->|Text| API[FastAPI Backend]
     User -->|Audio| AIn[Audio Input - Mic]
-    AIn --> STT
+    AIn --> STT[Speech-to-Text]
     AIn --> EMO[Emotion Recognition]
     STT --> API[FastAPI Backend]
     EMO --> Orchestrator[ADK Orchestrator]
@@ -96,6 +96,7 @@ uvicorn persona_reflect.main:app --reload --host 0.0.0.0 --port 8000
 
 # Terminal 2: Frontend  
 cd frontend
+npm install
 npm run dev
 ```
 
@@ -260,9 +261,6 @@ gcloud run deploy persona-reflect \
 ## 🔮 Future Enhancements
 
 - [ ] Memory system for conversation history
-- [ ] Calendar integration for time management
-- [ ] Voice input/output
-- [ ] Mobile app
 - [ ] More specialized agents (Financial Advisor, Career Coach)
 - [ ] A2A protocol for external agent integration
 
@@ -270,14 +268,6 @@ gcloud run deploy persona-reflect \
 
 MIT License - HackDuke 2025
 
-## 🙏 Acknowledgments
-
-- Google ADK team for the amazing framework
-- HackDuke organizers
-- Coffee ☕
-
 ---
-
-**Built with ❤️ at HackDuke 2025**
 
 *"Your personal board of advisors, powered by AI"*
