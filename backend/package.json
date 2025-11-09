@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@types/recorder-js": "^1.0.4"
+  }
+}
