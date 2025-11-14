@@ -4,6 +4,8 @@
 
 ### 🏆 HackDuke 2025 Project
 
+> **⚠️ Important:** This project is actively developed on the `backend_ai2` branch, which contains the latest features including voice input, emotion charts, and enhanced calendar integration. Please use `backend_ai2` as the default branch.
+
 PersonaReflect uses Google ADK to create a multi-agent system that provides diverse perspectives on personal dilemmas through four distinct AI personas.
 
 ## 🌟 Features
@@ -30,9 +32,10 @@ PersonaReflect uses Google ADK to create a multi-agent system that provides dive
 ### Setup & Install
 
 ```bash
-# Clone the repo
+# Clone the repo and checkout the backend_ai2 branch
 git clone https://github.com/yuancx2019/hackDuke2025
 cd hackDuke2025
+git checkout backend_ai2
 
 # Install backend + frontend dependencies
 make install
