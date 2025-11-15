@@ -151,18 +151,15 @@ Follow these steps to enable the connection locally.
 ### ✅ 2️⃣ Add the Credentials to the Backend
 
 1. Move your downloaded credentials into the backend directory and rename it to:
-
    ```
    backend/credentials.json
    ```
 
 2. Add both credentials and tokens to your `.gitignore`:
-
    ```
    backend/credentials.json
    backend/.gcal_token.json
    ```
-
 ---
 
 ### ✅ 3️⃣ Add Test Users to the OAuth Consent Screen
@@ -355,65 +352,6 @@ Each agent has access to **evidence-based therapeutic tools** that go beyond con
 | 🧘 **Sage** | 4 mindfulness tools | Breathwork, body scans, values clarification, 5-4-3-2-1 grounding |
 
 **📖 Detailed Documentation:** See [`backend/persona_reflect/agents/README.md`](./backend/persona_reflect/agents/README.md) for:
-
-### Development Workflow
-
-1. **Setup Environment**
-   ```bash
-   # Clone and install
-   git clone https://github.com/yuancx2019/hackDuke2025
-   cd hackDuke2025
-   make install
-   
-   # Configure API keys
-   cp backend/.env.example backend/.env
-   # Edit backend/.env with your GOOGLE_API_KEY
-   ```
-
-2. **Start Development Servers**
-   ```bash
-   # Terminal 1: Backend
-   make backend
-   
-   # Terminal 2: Frontend
-   make frontend
-   ```
-
-3. **Test Changes**
-   ```bash
-   # Quick smoke test
-   cd backend && python quick_test.py
-   
-   # Interactive agent testing
-   cd backend && python interactive_demo.py
-   
-   # Full test suite
-   make test
-   ```
-
-4. **Code Quality**
-   ```bash
-   # Format and lint
-   make lint
-   
-   # Check for errors
-   make test
-   ```
-
-## 📈 Performance
-
-- **Response Time**: <3 seconds for all 4 personas
-- **Parallel Processing**: All agents run concurrently
-- **Scalable**: Ready for cloud deployment
-
-
-### Google Cloud Run
-```bash
-gcloud run deploy persona-reflect \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated
-```
 
 ## 👥 Team
 - **Frontend**: React + TypeScript expert
