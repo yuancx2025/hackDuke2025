@@ -12,7 +12,6 @@ PersonaReflect uses Google ADK to create a multi-agent system that provides dive
 - [🧰 Agent Tools](#-specialized-tools-15-functions) - Tool summary (detailed docs in `agents/README.md`)
 - [📊 Google Calendar Integration](#-google-calendar-integration-rational-analyst--alex) - OAuth setup guide
 - [🔄 Complete Pipeline](#-complete-pipeline) - Architecture deep-dive
-- [📚 API Endpoints](#-api-endpoints) - Backend API reference
 
 ## 🏗️ Architecture
 
@@ -118,26 +117,6 @@ Then open http://localhost:5173/ and test the complete flow:
 3. Enter a dilemma and submit
 4. Verify all 4 AI personas respond (10-20 seconds)
 5. Create and save an action plan
-
-**📘 For detailed integration testing:** See [INTEGRATION_TEST.md](./INTEGRATION_TEST.md)
-
-### Access the Application
-
-- 🌐 **Frontend**: http://localhost:5173
-- 🔧 **API Docs**: http://localhost:8000/docs
-- 📊 **API Health**: http://localhost:8000/
-
-## 📚 API Endpoints
-
-| Endpoint             | Method | Description                                   |
-| -------------------- | ------ | --------------------------------------------- |
-| `/`                  | GET    | Health check                                  |
-| `/api/reflect`       | POST   | Process dilemma through all personas          |
-| `/api/action-plan`   | POST   | Generate action plan from insights            |
-| `/api/personas`      | GET    | Get persona information                       |
-| `/api/alex/schedule` | POST   | Get available time slots from Google Calendar |
-| `/api/alex/book`     | POST   | Create a new event on Google Calendar         |
-
 ---
 
 ## 📊 Google Calendar Integration (Rational Analyst — Alex)
